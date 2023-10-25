@@ -1,6 +1,22 @@
 from bs4 import BeautifulSoup
 import requests
+from datetime import datetime
 
+def time_difference_in_minutes(time1, time2):
+    time_format = '%I:%M %p'
+    datetime1 = datetime.strptime(time1, time_format)
+    datetime2 = datetime.strptime(time2, time_format)
+
+    try:
+        datetime1 = datetime.strptime(time1, time_format)
+        datetime2 = datetime.strptime(time2, time_format)
+    except ValueError:
+        return "Invalid time format"
+
+    time_delta = datetime2 - datetime1
+    minutes_difference = time_delta.total_seconds() / 60
+
+    return round(minutes_difference)
 def stationNameToStationNumber(name):
     dictionary = {
         "New London": 1,
@@ -15,17 +31,21 @@ def stationNameToStationNumber(name):
     }
     return dictionary[name]
 
-def getTrainHTML(startStation, endStation, travelDate, travelTime):
+def getTrainHTML(startStation, endStation, travelDate, travelTimed):
 
     url = "https://shorelineeast.com/schedules/trip-planner"
     headers = {}
+
+    terminus = "New Haven Union"
+    if (stationNameToStationNumber(startStation) - stationNameToStationNumber(endStation)) > 0:
+        terminus = "New London"
 
     data = {
         "fromstation": stationNameToStationNumber(startStation),
         "tostation": stationNameToStationNumber(endStation),
         "travel_date": travelDate,
         "way": "2",
-        "time": travelTime,
+        "time": travelTimed,
         "return": "false",
     }
 
@@ -54,9 +74,9 @@ def getTrainHTML(startStation, endStation, travelDate, travelTime):
     
     final = []
     for x in range(len(travelTime)):
-        final.append({"trainNumber": trainIDs[x], "trainTime": departTimes[x], "timeTimeArrive": arrivalTimes[x], "trainTravelTime": travelTime[x]})
+        final.append({"terminus": terminus, "trainNumber": trainIDs[x], "trainTime": departTimes[x], "timeTimeArrive": arrivalTimes[x], "trainTravelTime": travelTime[x], "timeFromUserRequest": time_difference_in_minutes(travelTimed, departTimes[x])})
     
     return final
     
 
-print(getTrainHTML("Madison", "Guilford", "10/30/2023", "9:00 AM"))
+print(getTrainHTML("Guilford", "Madison", "10/30/2023", "1:00 AM"))
