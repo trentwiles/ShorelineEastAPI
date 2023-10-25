@@ -17,8 +17,15 @@ def time_difference_in_minutes(time1, time2):
     minutes_difference = time_delta.total_seconds() / 60
 
     return round(minutes_difference)
-def stationNameToStationNumber(name):
-    dictionary = {
+
+def flip_dict(input_dict):
+    flipped_dict = {}
+    for key, value in input_dict.items():
+        flipped_dict[value] = key
+    return flipped_dict
+
+def getTrainDB():
+    return {
         "New London": 1,
         "Old Saybrook": 2,
         "Westbrook": 3,
@@ -29,9 +36,17 @@ def stationNameToStationNumber(name):
         "New Haven State Street Station": 8,
         "New Haven Union Station": 9
     }
-    return dictionary[name]
+def stationNameToStationNumber(name):
+    dictionary = getTrainDB()
+    try:
+        return dictionary[name]
+    except:
+        return -1
 
 def getTrainHTML(startStation, endStation, travelDate, travelTimed):
+
+    if stationNameToStationNumber(startStation) == -1 or stationNameToStationNumber(endStation) == -1:
+        return {"error": True, "message": "Invalid station name(s)"}
 
     url = "https://shorelineeast.com/schedules/trip-planner"
     headers = {}
@@ -76,7 +91,20 @@ def getTrainHTML(startStation, endStation, travelDate, travelTimed):
     for x in range(len(travelTime)):
         final.append({"terminus": terminus, "trainNumber": trainIDs[x], "trainTime": departTimes[x], "timeTimeArrive": arrivalTimes[x], "trainTravelTime": travelTime[x], "timeFromUserRequest": time_difference_in_minutes(travelTimed, departTimes[x])})
     
-    return final
+    return {"error": False, "trains": final}
+
+def getAllTrains(startStation, travelDate, travelTimed):
+    number = stationNameToStationNumber(startStation)
+    reverseTrains = flip_dict(getTrainDB())
+
+    # If the train station is New London, then don't find trains going past NL ("eastbound")
+    if number == 1:
+        print()
+    
+    # If the train station is New Haven, then don't find trains going past NH ("westbound")
+    if number == 9:
+        print()
+    
     
 
-print(getTrainHTML("Guilford", "Madison", "10/30/2023", "1:00 AM"))
+print(getTrainHTML("Guilford", "Madison", "10/30/2023", "4:00 PM"))
