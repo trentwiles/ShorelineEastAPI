@@ -72,6 +72,7 @@ def board(station):
     try:
         east = api["east"]["trains"]
         for train in east:
+            print(train["trainNumber"])
             if train["timeFromUserRequest"] > 0:
                 eastTrainsText += "," + str(train["timeFromUserRequest"])
                 eastTrainsIDs += "," + str(train["trainNumber"])

@@ -27,7 +27,6 @@
         width: 400px;
         margin: 20px auto;
         background-color: #000;
-        border: 1px solid #ccc;
         border-radius: 5px;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
         padding: 20px;
@@ -44,12 +43,12 @@
       <div class="train-time">
         {% if eastTrainsText != "" %}
         <p>New London - {{eastTrainsText}}</p>
-        <p>Trains #'s: - {{eastTrainIDs}}</p>
+        <p>Trains #'s: - {{eastTrainsIDs}}</p>
         {% endif %}
 
         {% if westTrainsText != "" %}
         <p>New Haven - {{westTrainsText}}</p>
-        <p>Train #'s - {{westTrainIDs}}</p>
+        <p>Train #'s - {{westTrainsIDs}}</p>
         {% endif %}
 
         {% if eastTrainsText == "" and westTrainsText == "" %}
@@ -62,7 +61,7 @@
         setTimeout(function() {
             // Redirect to a new URL
             window.location.href = '/time/{{station}}'; // Replace with your desired URL
-        }, 15000);
+        }, 25000);
     </script>
   </body>
 </html>
