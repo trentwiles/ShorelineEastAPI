@@ -41,17 +41,20 @@
   <body>
     <div class="message-board">
       <div class="train-time">
-        <center>
-            <h1>{{theTime}}</h1>
-        </center>
+        <marquee direction="up">
+        {% for alert in alerts %}
+            <h3>{{ alert["title"] }}</h3>
+            <small>{{ alert["content"] }}</small>
+        {% endfor %}
+        </marquee>
       </div>
     </div>
     <!-- ADD CODE HERE TO REDIRECT TO BOARD PAGE -->
     <script>
         setTimeout(function() {
             // Redirect to a new URL
-            window.location.href = '/alerts/{{station}}'; // Replace with your desired URL
-        }, 4000);
+            window.location.href = '/board/{{station}}'; // Replace with your desired URL
+        }, 15000);
     </script>
   </body>
 </html>

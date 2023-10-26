@@ -3,6 +3,7 @@ import sle
 import json
 import re
 import datetime
+import alerts
 
 app = Flask(__name__)
 
@@ -97,6 +98,10 @@ def board(station):
 
 
     return render_template("board.html", east=api["east"], west=api["west"], len=len, eastTrainsText = eastTrainsText, eastTrainsIDs=eastTrainsIDs, westTrainsText = westTrainsText, westTrainsIDs = westTrainsIDs, station=station)
+
+@app.route("/alerts/<station>")
+def stationAlerts(station):
+    return render_template("alert.html", alerts=alerts.getServiceAlerts(), station=station)
 
 @app.route("/arriving/<station>/<terminus>/<trainID>")
 def arrive(station, terminus, trainID):
