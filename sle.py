@@ -64,6 +64,8 @@ def getTrainHTML(startStation, endStation, travelDate, travelTimed):
         "return": "false",
     }
 
+    print(data)
+
     response = requests.post(url, data=data)
 
     soup = BeautifulSoup(response.text, "html.parser")
@@ -91,20 +93,21 @@ def getTrainHTML(startStation, endStation, travelDate, travelTimed):
     for x in range(len(travelTime)):
         final.append({"terminus": terminus, "trainNumber": trainIDs[x], "trainTime": departTimes[x], "timeTimeArrive": arrivalTimes[x], "trainTravelTime": travelTime[x], "timeFromUserRequest": time_difference_in_minutes(travelTimed, departTimes[x])})
     
-    return {"error": False, "trains": final}
+    return {"trains": final}
 
 def getAllTrains(startStation, travelDate, travelTimed):
-    number = stationNameToStationNumber(startStation)
+    number = stationNameToStationNumber(startStation) # let's say that the station was station #6
     reverseTrains = flip_dict(getTrainDB())
+    
+    westStation = number + 1
+    eastStation = number - 1
 
     # If the train station is New London, then don't find trains going past NL ("eastbound")
     if number == 1:
-        print()
+        return {"error": False, "east": getTrainHTML(startStation, reverseTrains[eastStation], travelDate, travelTimed), "west": {"trains": []}}
     
     # If the train station is New Haven, then don't find trains going past NH ("westbound")
     if number == 9:
-        print()
+        return {"error": False, "east": {"trains": []}, "west": getTrainHTML(startStation, reverseTrains[westStation], travelDate, travelTimed)}
     
-    
-
-print(getTrainHTML("Guilford", "Madison", "10/30/2023", "4:00 PM"))
+    return {"error": False, "east": getTrainHTML(startStation, reverseTrains[eastStation], travelDate, travelTimed), "west": getTrainHTML(startStation, reverseTrains[westStation], travelDate, travelTimed)}
