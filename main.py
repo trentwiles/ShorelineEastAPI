@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, redirect
 import sle
 import json
 import re
@@ -24,6 +24,12 @@ def time(station):
     if current_hour > 12:
         current_hour -= 12
 
+    if current_hour < 10:
+        current_hour = "0" + str(current_hour)
+
+    if current_minute < 10:
+        current_minute = "0" + str(current_minute)
+
     theTime = f"{current_hour}:{current_minute} {am_pm}"
     return render_template("time.html", station=station, theTime=theTime)
 
@@ -36,13 +42,20 @@ def board(station):
     current_hour = current_datetime.hour
     current_minute = current_datetime.minute
 
+    if current_hour > 12:
+        current_hour -= 12
+
+    if current_hour < 10:
+        current_hour = "0" + str(current_hour)
+
+    if current_minute < 10:
+        current_minute = "0" + str(current_minute)
+
     if current_hour < 12:
         am_pm = "AM"
     else:
         am_pm = "PM"
 
-    if current_hour > 12:
-        current_hour -= 12
 
     tD = f"{current_month}/{current_day}/{current_year}"
     tT = f"{current_hour}:{current_minute} {am_pm}"
@@ -63,14 +76,14 @@ def board(station):
                 eastTrainsText += "," + str(train["timeFromUserRequest"])
                 eastTrainsIDs += "," + str(train["trainNumber"])
             if train["timeFromUserRequest"] == 0:
-                hasLeavingEast = True
+                return redirect("/arriving/" + station + "/New%20London/" + str(train["trainNumber"]))
         west = api["west"]["trains"]
         for train in west:
             if train["timeFromUserRequest"] > 0:
                 westTrainsText += "," + str(train["timeFromUserRequest"])
                 westTrainsIDs += "," + str(train["trainNumber"])
             if train["timeFromUserRequest"] == 0:
-                hasLeavingWest = True
+                return redirect("/arriving/" + station + "/New%20Haven/" + str(train["trainNumber"]))
 
     except:
         print("oops")
@@ -83,6 +96,10 @@ def board(station):
 
 
     return render_template("board.html", east=api["east"], west=api["west"], len=len, eastTrainsText = eastTrainsText, eastTrainsIDs=eastTrainsIDs, westTrainsText = westTrainsText, westTrainsIDs = westTrainsIDs, station=station)
+
+@app.route("/arriving/<station>/<terminus>/<trainID>")
+def arrive(station, terminus, trainID):
+    return render_template("leaving.html", station=station, terminus=terminus, trainID=trainID)
 
 @app.route('/api/v1/getStations')
 def getStations():

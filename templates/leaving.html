@@ -41,7 +41,7 @@
   </head>
   <body>
     <div class="message-board">
-      <div class="train-time">
+      <div class="train-time" id="tt">
         <center>
           <h1>{{terminus}}</h1>
           <h3>Train: {{trainID}}</h3>
@@ -50,6 +50,25 @@
     </div>
     <!-- ADD CODE HERE TO REDIRECT TO TIME PAGE -->
     <script>
+        const myDiv = document.getElementById('tt');
+        let showCount = 0;
+
+        function showHideDiv() {
+            if (showCount < 10) {
+                if (myDiv.style.display === 'none') {
+                    myDiv.style.display = 'block';
+                } else {
+                    myDiv.style.display = 'none';
+                    showCount++;
+                }
+                setTimeout(showHideDiv, 2500); // 3 seconds
+            }
+        }
+
+        // Start the show/hide loop
+        showHideDiv();
+
+
         setTimeout(function() {
             // Redirect to a new URL
             window.location.href = '/time/{{station}}'; // Replace with your desired URL
