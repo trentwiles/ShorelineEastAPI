@@ -4,6 +4,30 @@ import datetime
 import time
 import sys
 
+STATIONS_ID_TO_NAME = {
+    "1": "New London",
+    "2": "Old Saybrook",
+    "3": "Westbrook",
+    "4": "Clinton",
+    "5": "Madison",
+    "6": "Guilford",
+    "7": "Branford",
+    "8": "New Haven State Street",
+    "9": "New Haven Union Station"
+}
+
+STATIONS_NAME_TO_ID = {
+    "New London": "1",
+    "Old Saybrook": "2",
+    "Westbrook": "3",
+    "Clinton": "4",
+    "Madison": "5",
+    "Guilford": "6",
+    "Branford": "7",
+    "New Haven State Street": "8",
+    "New Haven Union Station": "9"
+}
+
 WESTERN_TERMINUS = "New Haven Union Station"
 WESTERN_TERMINUS_ID = "9"
 EASTERN_TERMINUS = "New London"
@@ -32,17 +56,7 @@ def formatTime(tme):
     return tme
 
 def translateStationToId(name):
-    stations = {
-        "New London": "1",
-        "Old Saybrook": "2",
-        "Westbrook": "3",
-        "Clinton": "4",
-        "Madison": "5",
-        "Guilford": "6",
-        "Branford": "7",
-        "New Haven State Street": "8",
-        "New Haven Union Station": "9"
-    }
+    stations = STATIONS_NAME_TO_ID
 
     if name in stations:
         return stations[name]
@@ -50,25 +64,37 @@ def translateStationToId(name):
         return None
 
 def translateIDtoStation(id):
-    stations = {
-        "1": "New London",
-        "2": "Old Saybrook",
-        "3": "Westbrook",
-        "4": "Clinton",
-        "5": "Madison",
-        "6": "Guilford",
-        "7": "Branford",
-        "8": "New Haven State Street",
-        "9": "New Haven Union Station"
-    }
+    stations = STATIONS_ID_TO_NAME
     if id in stations:
         return stations[id]
     else:
         return None
     
-def getCallingAt(direction):
+def getCallingAt(direction, fromStation):
+    isTerminus = False
     if direction.lower() == "westbound":
-        return
+        stations = {key: value for key, value in reversed(STATIONS_NAME_TO_ID.items())}
+        if fromStation == WESTERN_TERMINUS:
+            stations = []
+            isTerminus = True
+    elif direction.lower() == "eastbound":
+        stations = STATIONS_NAME_TO_ID
+        if fromStation == EASTERN_TERMINUS:
+            stations = []
+            isTerminus = True
+    else:
+        return None
+
+    
+    cA = []
+    for station in stations:
+        if fromStation == station:
+            break
+        cA.append(station)
+
+    cA.reverse()
+
+    return {"currentStation": fromStation, "direction": direction, "callingAt": cA, "terminatesHere": isTerminus}
         
 
 def getAllTrainsAtStation(time:int, stationName:str):
@@ -89,15 +115,6 @@ def getAllTrainsAtStation(time:int, stationName:str):
     # IMPORTANT: NEED METHODS TO DETERMINE IF THE STATION INPUTTED IS THE TERMINUS
 
     # eastbound
-    """
-    fromstation	"1"
-tostation	"9"
-travel_date	"04/22/2024"
-way	"2"
-time	"7:00+AM"
-return	"false"
-
-    """
     dataTravelDate = f"{formatDate(month)}/{formatDate(day)}/{year}"
     dataTime = f"{formatTime(hour)}:{formatDate(minute)}+{amPM}"
 
@@ -114,9 +131,9 @@ return	"false"
     times = []
     for train in se.find_all("div", {"class": "result_box long"}):
         if train != None and "Depart" in train.text:
-            print(train.text)
-        print("--------------")
+            time = train.text.strip("Depart at:")
+            times.append(time)
 
-    print(r.status_code)
+    return times
 
-print(getAllTrainsAtStation(round(time.time()),"Branford"))
+#print(getAllTrainsAtStation(round(time.time()),"Branford"))
