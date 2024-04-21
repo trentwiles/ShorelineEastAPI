@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import datetime
 import time
-import sys
+import json
 
 STATIONS_ID_TO_NAME = {
     "1": "New London",
@@ -33,7 +33,7 @@ WESTERN_TERMINUS_ID = "9"
 EASTERN_TERMINUS = "New London"
 EASTERN_TERMINUS_ID = "1"
 
-USER_AGENT = "Shore Line East API (+https://github.com/trentwiles/ShorelineEastAPI)"
+USER_AGENT = json.loads(open("config.json").read())["USER_AGENT"]
 
 def formatDate(date):
     # Shoreline East wants dates to look like this:
