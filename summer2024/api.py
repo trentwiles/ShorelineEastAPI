@@ -55,6 +55,14 @@ def formatTime(tme):
         return str(int(tme) - 12)
     return tme
 
+def shorelineTimeToEpoch(hour, day, month, year):
+    day = int(day)
+    month = int(month)
+    year = int(year)
+
+    # Should convert 7:00 AM to 160000 or something like that
+
+
 def translateStationToId(name):
     stations = STATIONS_NAME_TO_ID
 
