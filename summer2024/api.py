@@ -79,10 +79,6 @@ def parseTime(rawTime, day, month, year):
         if hour == 12:
             hour = 0
 
-    
-    print("================================")
-    print(year, month, day, hour, minute)
-    print("================================")
     ts = datetime.datetime(year, month, day, hour, minute)
 
     return int(ts.timestamp())
@@ -135,14 +131,15 @@ def getCallingAt(direction, fromStation):
     return {"currentStation": fromStation, "direction": direction, "callingAt": cA, "terminatesAt": terminatesAt}
         
 
-def getAllTrainsAtStation(time:int, stationName:str):
+def getAllTrainsAtStation(requestedTime:int, stationName:str, showPastTrains:bool):
+    generatedAt = round(time.time())
     # get the station ID
     stationID = translateStationToId(stationName)
     if stationID == None:
         return None
     
     # convert timestamp
-    dt = datetime.datetime.fromtimestamp(time)
+    dt = datetime.datetime.fromtimestamp(requestedTime)
     year = str(dt.year)
     month = str(dt.month)
     day = str(dt.day)
@@ -186,9 +183,13 @@ def getAllTrainsAtStation(time:int, stationName:str):
     def addEpochTime(timesFromAbove):
         detailedTimes = []
         for t in timesFromAbove:
-            print(t)
             epochTime = parseTime(t, str(dt.day), str(dt.month), str(dt.year))
-            detailedTimes.append({"epochTime": epochTime, "humanReadable": t})
+
+            # if show past trains is turned off, and the train is in the past
+            if (not showPastTrains) and not (epochTime > generatedAt):
+                print("skipped train at " + t)
+            else:
+                detailedTimes.append({"epochTime": epochTime, "humanReadable": t})
         
         return detailedTimes
     
@@ -210,6 +211,8 @@ def getAllTrainsAtStation(time:int, stationName:str):
         }
 
     return {
+        "generatedAt": generatedAt,
+        "showingPastTrains": showPastTrains,
         "eastbound": eastbound,
         "westbound": westbound
     }
