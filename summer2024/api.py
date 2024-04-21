@@ -71,17 +71,22 @@ def translateIDtoStation(id):
         return None
     
 def getCallingAt(direction, fromStation):
-    isTerminus = False
+    # WARNING: THIS ISN'T 100% ACCURATE
+    # TRAINS SKIP SOME STATIONS
+    # SEE THIS PDF: https://shorelineeast.com/wp-content/uploads/2024/04/SLE_Sched_Apr7_8R2.pdf
+    terminatesAt = ""
     if direction.lower() == "westbound":
         stations = {key: value for key, value in reversed(STATIONS_NAME_TO_ID.items())}
+        terminatesAt = WESTERN_TERMINUS
         if fromStation == WESTERN_TERMINUS:
             stations = []
-            isTerminus = True
+
     elif direction.lower() == "eastbound":
         stations = STATIONS_NAME_TO_ID
+        terminatesAt = EASTERN_TERMINUS
         if fromStation == EASTERN_TERMINUS:
             stations = []
-            isTerminus = True
+
     else:
         return None
 
@@ -94,7 +99,7 @@ def getCallingAt(direction, fromStation):
 
     cA.reverse()
 
-    return {"currentStation": fromStation, "direction": direction, "callingAt": cA, "terminatesHere": isTerminus}
+    return {"currentStation": fromStation, "direction": direction, "callingAt": cA, "terminatesAt": terminatesAt}
         
 
 def getAllTrainsAtStation(time:int, stationName:str):
@@ -114,11 +119,10 @@ def getAllTrainsAtStation(time:int, stationName:str):
 
     # IMPORTANT: NEED METHODS TO DETERMINE IF THE STATION INPUTTED IS THE TERMINUS
 
-    # eastbound
     dataTravelDate = f"{formatDate(month)}/{formatDate(day)}/{year}"
     dataTime = f"{formatTime(hour)}:{formatDate(minute)}+{amPM}"
 
-    data = {
+    westboundData = {
         "fromstation": stationID,
         "tostation": WESTERN_TERMINUS_ID,
         "travel_date": dataTravelDate,
@@ -126,14 +130,47 @@ def getAllTrainsAtStation(time:int, stationName:str):
         "time": dataTime,
         "return": "false" # one way only
     }
-    r = requests.post("https://shorelineeast.com/schedules/trip-planner", data=data, headers={"User-agent": USER_AGENT})
-    se = BeautifulSoup(r.text, "html.parser")
-    times = []
-    for train in se.find_all("div", {"class": "result_box long"}):
-        if train != None and "Depart" in train.text:
-            time = train.text.strip("Depart at:")
-            times.append(time)
+    eastboundData = {
+        "fromstation": stationID,
+        "tostation": EASTERN_TERMINUS_ID,
+        "travel_date": dataTravelDate,
+        "way": "2", # no idea what this is
+        "time": dataTime,
+        "return": "false" # one way only
+    }
+    def getTimesHelper(postData):
+        r = requests.post("https://shorelineeast.com/schedules/trip-planner", data=postData, headers={"User-agent": USER_AGENT})
+        se = BeautifulSoup(r.text, "html.parser")
+        times = []
+        for train in se.find_all("div", {"class": "result_box long"}):
+            if train != None and "Depart" in train.text:
+                time = train.text.strip("Depart at:").strip()
+                times.append(time)
 
-    return times
+        return times
+    
+
+    if stationName == EASTERN_TERMINUS:
+        eastbound = {}
+    else:
+        eastbound = {
+            "times": getTimesHelper(eastboundData),
+            "stops": getCallingAt("eastbound", stationName)
+        }
+    
+    if stationName == WESTERN_TERMINUS:
+        westbound = {}
+    else:
+        westbound = {
+            "times": getTimesHelper(westboundData),
+            "stops": getCallingAt("westbound", stationName)
+        }
+
+    return {
+        "eastbound": eastbound,
+        "westbound": westbound
+    }
+    
+
 
 #print(getAllTrainsAtStation(round(time.time()),"Branford"))
