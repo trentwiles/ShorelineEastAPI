@@ -184,12 +184,17 @@ def getAllTrainsAtStation(requestedTime:int, stationName:str, showPastTrains:boo
         detailedTimes = []
         for t in timesFromAbove:
             epochTime = parseTime(t, str(dt.day), str(dt.month), str(dt.year))
+            until = round((epochTime - generatedAt)/60)
+
+            isInPast = True
+            if until > 0:
+                isInPast = False
 
             # if show past trains is turned off, and the train is in the past
             if (not showPastTrains) and not (epochTime > generatedAt):
                 print("skipped train at " + t)
             else:
-                detailedTimes.append({"epochTime": epochTime, "humanReadable": t})
+                detailedTimes.append({"epochTime": epochTime, "humanReadable": t, "minutesUntil": until, "inPast": isInPast})
         
         return detailedTimes
     
