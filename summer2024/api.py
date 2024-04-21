@@ -55,12 +55,37 @@ def formatTime(tme):
         return str(int(tme) - 12)
     return tme
 
-def shorelineTimeToEpoch(hour, day, month, year):
+def parseTime(rawTime, day, month, year):
     day = int(day)
     month = int(month)
     year = int(year)
 
+    sepHourAndMin = rawTime.split(":")
+    minAndAMPM = sepHourAndMin[1].split(" ")
+    
+    hour = int(sepHourAndMin[0])
+    minute = int(minAndAMPM[0])
+    amPM = minAndAMPM[1]
+
     # Should convert 7:00 AM to 160000 or something like that
+    # shorelineTimeToEpoch(5, "PM", 10, 3, 2024) = 166000000
+    if amPM == "PM":
+        if hour != 12:
+            hour += 12
+
+        if hour == 24:
+            hour = 12
+    else:
+        if hour == 12:
+            hour = 0
+
+    
+    print("================================")
+    print(year, month, day, hour, minute)
+    print("================================")
+    ts = datetime.datetime(year, month, day, hour, minute)
+
+    return int(ts.timestamp())
 
 
 def translateStationToId(name):
@@ -121,6 +146,7 @@ def getAllTrainsAtStation(time:int, stationName:str):
     year = str(dt.year)
     month = str(dt.month)
     day = str(dt.day)
+    print("day:" + day)
     hour = str(dt.hour)
     amPM = 'AM' if int(hour) < 12 else 'PM'
     minute = str(dt.minute)
@@ -157,12 +183,21 @@ def getAllTrainsAtStation(time:int, stationName:str):
 
         return times
     
+    def addEpochTime(timesFromAbove):
+        detailedTimes = []
+        for t in timesFromAbove:
+            print(t)
+            epochTime = parseTime(t, str(dt.day), str(dt.month), str(dt.year))
+            detailedTimes.append({"epochTime": epochTime, "humanReadable": t})
+        
+        return detailedTimes
+    
 
     if stationName == EASTERN_TERMINUS:
         eastbound = {}
     else:
         eastbound = {
-            "times": getTimesHelper(eastboundData),
+            "times": addEpochTime(getTimesHelper(eastboundData)),
             "stops": getCallingAt("eastbound", stationName)
         }
     
@@ -170,7 +205,7 @@ def getAllTrainsAtStation(time:int, stationName:str):
         westbound = {}
     else:
         westbound = {
-            "times": getTimesHelper(westboundData),
+            "times": addEpochTime(getTimesHelper(westboundData)),
             "stops": getCallingAt("westbound", stationName)
         }
 
