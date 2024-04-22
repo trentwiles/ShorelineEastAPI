@@ -35,6 +35,9 @@ EASTERN_TERMINUS_ID = "1"
 
 USER_AGENT = json.loads(open("config.json").read())["USER_AGENT"]
 
+def getStations():
+    return STATIONS_NAME_TO_ID
+
 def formatDate(date):
     # Shoreline East wants dates to look like this:
     # 04/01/2024

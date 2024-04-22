@@ -36,6 +36,10 @@ def stnToid(name):
         return jsonHelper({"success": False, "message": "Invalid station name"}, 400)
     return jsonHelper({"success": True, "stationID": translation}, 200)
 
+@app.route('/api/v1/stations/listAllStations')
+def listAllStn():
+    return jsonHelper(api.getStations(), 200)
+
 
 @app.route('/api/v1/trains/getStationByID/<id>')
 def stationByID(id):
