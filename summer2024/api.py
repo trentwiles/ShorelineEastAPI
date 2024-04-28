@@ -176,11 +176,16 @@ def getAllTrainsAtStation(requestedTime:int, stationName:str, showPastTrains:boo
         r = requests.post("https://shorelineeast.com/schedules/trip-planner", data=postData, headers={"User-agent": USER_AGENT})
         se = BeautifulSoup(r.text, "html.parser")
         times = []
+        trainsNumbers = []
         for train in se.find_all("div", {"class": "result_box long"}):
-            if train != None and "Depart" in train.text:
-                time = train.text.strip("Depart at:").strip()
-                times.append(time)
+            if train != None:
+                if "Depart" in train.text:
+                    time = train.text.strip("Depart at:").strip()
+                    times.append(time)
+                if "Board train" in train.text:
+                    trainsNumbers.append(train.text.strip("Board Train Nymber:").strip())
 
+        # trainsNumbers is not being used right now
         return times
     
     def addEpochTime(timesFromAbove):
