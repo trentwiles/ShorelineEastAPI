@@ -33,9 +33,19 @@ FARE_TYPES = {
     "School Monthly": "school_monthly"
 }
 
-
+def convertNameToFareHelper(normalName):
+    if normalName not in NORMAL_NAMES_TO_FARE_NAMES:
+        return None
+    return NORMAL_NAMES_TO_FARE_NAMES[normalName]
 
 def calculateFare(ticketType, isSenior, isOffPeak, start, end):
+    # assuming start & end are not in the proper format
+    start = convertNameToFareHelper(start)
+    end = convertNameToFareHelper(end)
+
+    if start == None or end == None:
+        return None
+
     data = {
         "ticket": ticketType,
         "senior": str(isSenior).lower(),
@@ -44,8 +54,14 @@ def calculateFare(ticketType, isSenior, isOffPeak, start, end):
         "endLoc": end
     }
     r = requests.post("https://shorelineeast.com/wp-content/themes/pressville-child/shortcodes/fare_calculator/include/results.php", data=data, headers={"User-agent": api.USER_AGENT})
+    
+    # A failed result is blank
     if r.text.strip() == "":
         return None
-    return r.json()[0]
+    
+    fare = r.json()[0]
+    comment = r.json()[1]
+
+    return {"fare": fare, "comment": comment, "currency": "USD"}
 
 print(calculateFare("one_way", True, False, "newHaven", "newLondon"))
