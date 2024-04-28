@@ -2,7 +2,10 @@ from flask import Flask, Response, request
 import json
 import api
 import stationapi
+import fares
 import time
+
+VERSION = json.loads(open("config.json").read())["VERSION"]
 
 app = Flask(__name__)
 
@@ -17,18 +20,25 @@ def parseStation(unparsed):
         station += word.lower().capitalize() + " "
     return station.strip()
 
+def strToBoolHelper(string):
+    if string in ["true", "True"]:
+        return True
+    if string in ["false", "False"]:
+        return False
+    return None
+
 @app.route('/')
 def home():
     return jsonHelper({"online": True}, 200)
 
-@app.route('/api/v1/stations/convertIDToStation/<id>')
+@app.route(f'/api/{VERSION}/stations/convertIDToStation/<id>')
 def idToStn(id):
     translation = api.translateIDtoStation(id)
     if translation == None:
         return jsonHelper({"success": False, "message": "Invalid station ID"}, 400)
     return jsonHelper({"success": True, "stationName": translation}, 200)
 
-@app.route('/api/v1/stations/convertStationToID/<name>')
+@app.route(f'/api/{VERSION}/stations/convertStationToID/<name>')
 def stnToid(name):
     name = parseStation(name)
     translation = api.translateStationToId(name)
@@ -36,19 +46,19 @@ def stnToid(name):
         return jsonHelper({"success": False, "message": "Invalid station name"}, 400)
     return jsonHelper({"success": True, "stationID": translation}, 200)
 
-@app.route('/api/v1/stations/listAllStations')
+@app.route(f'/api/{VERSION}/stations/listAllStations')
 def listAllStn():
     return jsonHelper(api.getStations(), 200)
 
 
-@app.route('/api/v1/trains/getStationByID/<id>')
+@app.route(f'/api/{VERSION}/trains/getStationByID/<id>')
 def stationByID(id):
     stn = api.translateIDtoStation(id)
     if stn == None:
         return jsonHelper({"success": False, "message": "Invalid ID"}, 400)
     return jsonHelper(api.getAllTrainsAtStation(round(time.time()), stn, False), 200)
 
-@app.route('/api/v1/trains/getStationByName/<name>')
+@app.route(f'/api/{VERSION}/trains/getStationByName/<name>')
 def stationByName(name):
     # assuming the name is in the format "new-haven-union-station"
     # following converts it into New Haven Union Station
@@ -59,6 +69,28 @@ def stationByName(name):
         return jsonHelper({"success": False, "message": "Invalid name"}, 400)
 
     return jsonHelper(data, 200)
+
+@app.route(f'/api/{VERSION}/fares/getRideFare', methods=["POST"])
+def getFare():
+    # user needs to POST:
+    # - Ticket Type
+    # - Is it off peak?
+    # - Are they a senior?
+    # - To
+    # - From
+    start = request.form.get("start")
+    end = request.form.get("end")
+    ticketType = request.form.get("ticketType")
+    isSenior = request.form.get("isSenior")
+    isOffPeak = request.form.get("isOffPeak")
+
+    if start is None or end is None or ticketType is None or isSenior is None or isOffPeak is None:
+        return jsonHelper({"success": False, "message": "Missing one or more parameter(s)"}, 400)
+
+    result = fares.calculateFare(ticketType, isSenior, isOffPeak, start, end)
+    if result == None:
+        return jsonHelper({"success": False, "message": "Something went wrong"}, status=400)
+    return jsonHelper(result, status=200)
 
 if __name__ == '__main__':
     app.run(debug=True, port=10394)

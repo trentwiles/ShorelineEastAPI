@@ -1,3 +1,4 @@
 {
-    "USER_AGENT": "Shore Line East API (+https://github.com/trentwiles/ShorelineEastAPI)"
+    "USER_AGENT": "Shore Line East API (+https://github.com/trentwiles/ShorelineEastAPI)",
+    "VERSION": "v1"
 }

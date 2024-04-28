@@ -64,4 +64,4 @@ def calculateFare(ticketType, isSenior, isOffPeak, start, end):
 
     return {"fare": fare, "comment": comment, "currency": "USD"}
 
-print(calculateFare("one_way", True, False, "newHaven", "newLondon"))
+#print(calculateFare("one_way", True, False, "newHaven", "newLondon"))
