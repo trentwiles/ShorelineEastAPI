@@ -14,4 +14,6 @@ def combineAudios(audios, output):
 
     return f"Saved to {savePoint}" 
 
-combineAudios(["welcome_to_this_service.mp3", "Calling at.mp3", "Madison.mp3", "Branford.mp3"], "yeah.mp3")
+def atStation(station):
+    # This is {station}. Change here for X and Y.
+    combineAudios(["this_is.mp3", f"{station}.mp3"])
