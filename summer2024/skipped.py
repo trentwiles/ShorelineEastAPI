@@ -32,3 +32,5 @@ def getStationsSkipped(trainNumber):
     
     if trainNumber == "1699":
         return ["Madison"]
+    
+    return []
