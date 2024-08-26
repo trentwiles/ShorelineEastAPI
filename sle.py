@@ -44,7 +44,12 @@ def stationNameToStationNumber(name):
         return -1
 
 def getTrainHTML(startStation, endStation, travelDate, travelTimed):
+    
+    # Did they not specify which New Haven Station?
+    if startStation == "New Haven" or endStation == "New Haven":
+        return {"trains": None, "success": False, "message": "There are two SLE stations in New Haven, New Haven Union Station and New Haven State Street Station. Please specify which station you would like to travel to."}
 
+    # Is the station name not in the dictionary of stations (AKA is the station name invalid)
     if stationNameToStationNumber(startStation) == -1 or stationNameToStationNumber(endStation) == -1:
         return {"trains": None, "success": False, "message": "Invalid station name(s)"}
 
