@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return ""
+    return render_template('docs/docs.html')
 
 @app.route('/time/<station>')
 def time(station):
