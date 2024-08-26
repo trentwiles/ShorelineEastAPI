@@ -71,6 +71,10 @@ def getTrainHTML(startStation, endStation, travelDate, travelTimed):
     soup = BeautifulSoup(response.text, "html.parser")
     table = soup.find("table")
     
+    # Before anything, we need to make sure there was a valid request and the user
+    # didn't screw up (ie. invalid date/time) that would invoke an invalid response
+    # from SLE
+    
     # Before we check all train times, we need to make sure there ARE train times
     # Somtimes, SLE will show an error message when the date you have selected is
     # to far in advance (example: https://trentwil.es/a/TwFwChF7yu.png)
@@ -79,7 +83,7 @@ def getTrainHTML(startStation, endStation, travelDate, travelTimed):
     # meaning that the request is a failure, hence SLE cannot predict so far out
     tripHeading = soup.find("div", {"class": "trip_heading"})
     if "Your Trip Itinerary" not in tripHeading.text:
-        return {"trains": None, "predictError": True, "message": "There is an anticipated schedule change occurring before the date you selected. We advise checking back closer to your travel date or call us at 1-877-CTrides (1-877-287-4337) for more information."}
+        return {"trains": None, "success": False, "message": "There is an anticipated schedule change occurring before the date you selected. We advise checking back closer to your travel date or call us at 1-877-CTrides (1-877-287-4337) for more information."}
     
     
     # Find all train times
@@ -104,9 +108,13 @@ def getTrainHTML(startStation, endStation, travelDate, travelTimed):
     
     final = []
     for x in range(len(travelTime)):
-        final.append({"terminus": terminus, "trainNumber": trainIDs[x], "trainTime": departTimes[x], "timeTimeArrive": arrivalTimes[x], "trainTravelTime": travelTime[x], "timeFromUserRequest": time_difference_in_minutes(travelTimed, departTimes[x])})
+        try:
+            timeToTrain = time_difference_in_minutes(travelTimed, departTimes[x])
+        except ValueError:
+            return {"trains": None, "success": False, "message": "Invalid time, did you use the correct format? (examples: 10:00+AM, 10:00+PM, 01:00+AM, 04:00+PM)"}
+        final.append({"terminus": terminus, "trainNumber": trainIDs[x], "trainTime": departTimes[x], "timeTimeArrive": arrivalTimes[x], "trainTravelTime": travelTime[x], "timeFromUserRequest": timeToTrain})
     
-    return {"trains": final, "predictError": False}
+    return {"trains": final, "success": True}
 
 def getAllTrains(startStation, travelDate, travelTimed):
     number = stationNameToStationNumber(startStation) # let's say that the station was station #6
