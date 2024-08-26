@@ -46,7 +46,7 @@ def stationNameToStationNumber(name):
 def getTrainHTML(startStation, endStation, travelDate, travelTimed):
 
     if stationNameToStationNumber(startStation) == -1 or stationNameToStationNumber(endStation) == -1:
-        return {"error": True, "message": "Invalid station name(s)"}
+        return {"trains": None, "success": False, "message": "Invalid station name(s)"}
 
     url = "https://shorelineeast.com/schedules/trip-planner"
     headers = {}
