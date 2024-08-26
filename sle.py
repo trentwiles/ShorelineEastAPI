@@ -56,8 +56,8 @@ def getTrainHTML(startStation, endStation, travelDate, travelTimed):
         terminus = "New London"
 
     data = {
-        "fromstation": stationNameToStationNumber(startStation),
-        "tostation": stationNameToStationNumber(endStation),
+        "fromstation": str(stationNameToStationNumber(startStation)),
+        "tostation": str(stationNameToStationNumber(endStation)),
         "travel_date": travelDate,
         "way": "2",
         "time": travelTimed,
@@ -70,6 +70,19 @@ def getTrainHTML(startStation, endStation, travelDate, travelTimed):
 
     soup = BeautifulSoup(response.text, "html.parser")
     table = soup.find("table")
+    
+    # Before we check all train times, we need to make sure there ARE train times
+    # Somtimes, SLE will show an error message when the date you have selected is
+    # to far in advance (example: https://trentwil.es/a/TwFwChF7yu.png)
+    #
+    # This line here will check if the page lacks the "Your Trip Itinerary" text,
+    # meaning that the request is a failure, hence SLE cannot predict so far out
+    tripHeading = soup.find("div", {"class": "trip_heading"})
+    if "Your Trip Itinerary" not in tripHeading.text:
+        return {"trains": None, "predictError": True, "message": "There is an anticipated schedule change occurring before the date you selected. We advise checking back closer to your travel date or call us at 1-877-CTrides (1-877-287-4337) for more information."}
+    
+    
+    # Find all train times
     trains = table.find_all("td")
 
     departTimes = []
@@ -93,7 +106,7 @@ def getTrainHTML(startStation, endStation, travelDate, travelTimed):
     for x in range(len(travelTime)):
         final.append({"terminus": terminus, "trainNumber": trainIDs[x], "trainTime": departTimes[x], "timeTimeArrive": arrivalTimes[x], "trainTravelTime": travelTime[x], "timeFromUserRequest": time_difference_in_minutes(travelTimed, departTimes[x])})
     
-    return {"trains": final}
+    return {"trains": final, "predictError": False}
 
 def getAllTrains(startStation, travelDate, travelTimed):
     number = stationNameToStationNumber(startStation) # let's say that the station was station #6

@@ -116,6 +116,8 @@ def getPredictions(station1, station2, travelDate, travelTime):
     travelTime = re.sub(r'\+', ' ', travelTime)
     travelDate = re.sub(r'\+', '/', travelDate)
     api = sle.getTrainHTML(station1, station2, travelDate, travelTime)
+    if api["predictError"] == True:
+        return Response(json.dumps({"error": True, "data": api}), content_type="application/json"), 400
     return Response(json.dumps({"error": False, "data": api}), content_type="application/json"), 200
 
 @app.route('/api/v1/getAllTrains/<station>/<travelDate>/<travelTime>')
