@@ -72,8 +72,11 @@ def getTrainHTML(startStation, endStation, travelDate, travelTimed):
     table = soup.find("table")
     
     # Before anything, we need to make sure there was a valid request and the user
-    # didn't screw up (ie. invalid date/time) that would invoke an invalid response
-    # from SLE
+    # didn't screw up the date. If the user screws up the date, then SLE won't
+    # show the trip_heading div
+    tripHeading = soup.find("div", {"class": "trip_heading"})
+    if tripHeading == None:
+        return {"trains": None, "success": False, "message": "Invalid date, did you use the right format? (ex. 08+31+2024, 12+31+2024, 01+04+2023)"}
     
     # Before we check all train times, we need to make sure there ARE train times
     # Somtimes, SLE will show an error message when the date you have selected is
@@ -81,7 +84,6 @@ def getTrainHTML(startStation, endStation, travelDate, travelTimed):
     #
     # This line here will check if the page lacks the "Your Trip Itinerary" text,
     # meaning that the request is a failure, hence SLE cannot predict so far out
-    tripHeading = soup.find("div", {"class": "trip_heading"})
     if "Your Trip Itinerary" not in tripHeading.text:
         return {"trains": None, "success": False, "message": "There is an anticipated schedule change occurring before the date you selected. We advise checking back closer to your travel date or call us at 1-877-CTrides (1-877-287-4337) for more information."}
     
