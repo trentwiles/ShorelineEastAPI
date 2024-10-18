@@ -4,6 +4,7 @@ import json
 import re
 import datetime
 import alerts
+import station as stn
 
 app = Flask(__name__)
 
@@ -130,6 +131,14 @@ def getAllTrains(station, travelDate, travelTime):
     print(travelDate)
 
     api = sle.getAllTrains(station, travelDate, travelTime)
+    if not api["error"]:
+        return Response(json.dumps(api), content_type="application/json"), 200
+    else:
+        return Response(json.dumps(api), content_type="application/json"), 400
+
+@app.route('/api/v1/getStationInfo/<station>')
+def stationInfo(station):
+    api = stn.getPageDetails(station)
     if not api["error"]:
         return Response(json.dumps(api), content_type="application/json"), 200
     else:
