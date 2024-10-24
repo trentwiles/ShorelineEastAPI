@@ -90,6 +90,11 @@ def getFare():
     result = fares.calculateFare(ticketType, isSenior, isOffPeak, start, end)
     if result == None:
         return jsonHelper({"success": False, "message": "Something went wrong"}, status=400)
+    
+    # add senior discount warning, per website
+    if isSenior == "true" or isSenior == True:
+        result["message"] = "Please note that reduced fares are not accepted on board weekday morning Peak trains. Please refer to the current schedule (https://shorelineeast.com/schedules) for Peak versus Off-Peak travel times."
+    
     return jsonHelper(result, status=200)
 
 if __name__ == '__main__':
