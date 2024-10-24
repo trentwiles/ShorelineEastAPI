@@ -95,6 +95,9 @@ def getFare():
     if isSenior == "true" or isSenior == True:
         result["message"] = "Please note that reduced fares are not accepted on board weekday morning Peak trains. Please refer to the current schedule (https://shorelineeast.com/schedules) for Peak versus Off-Peak travel times."
     
+    if isOffPeak == "true" or isOffPeak == True:
+        result["message"] = "Please note that off peak fares only apply to trips that involve Metro North, which this API does not support. Setting this value to true or false will not impact the fare cost."
+    
     return jsonHelper(result, status=200)
 
 if __name__ == '__main__':
