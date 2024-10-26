@@ -66,3 +66,69 @@ curl -X POST BASE_URL/api/v1/fares/getRideFare \
 ```
 
 \* this parameter only applies to trips that involve Metro North, which this API does not support. Setting this value to true or false will not impact the fare cost.
+
+
+## /api/v1/stations/listAllStations
+
+No parameters. Lists off all stations and their respective IDs.
+
+### Example
+
+```
+{
+  "New London": "1",
+  "Old Saybrook": "2",
+  "Westbrook": "3",
+  "Clinton": "4",
+  "Madison": "5",
+  "Guilford": "6",
+  "Branford": "7",
+  "New Haven State Street": "8",
+  "New Haven Union Station": "9"
+}
+```
+
+## /api/v1/trains/getStationByID/\<id>
+
+| Name | Data Type | Example                                                                     |
+| ---- | --------- | --------------------------------------------------------------------------- |
+| id | String    | ID of a station, ie. `1`, `4` |
+
+### Example
+
+```
+GET /api/v1/trains/getStationByID/5
+
+{
+  "generatedAt": 1729910302,
+  "showingPastTrains": false,
+  "eastbound": {
+    "times": [],
+    "stops": {
+      "currentStation": "Madison",
+      "direction": "eastbound",
+      "callingAt": [
+        "Clinton",
+        "Westbrook",
+        "Old Saybrook",
+        "New London"
+      ],
+      "terminatesAt": "New London"
+    }
+  },
+  "westbound": {
+    "times": [],
+    "stops": {
+      "currentStation": "Madison",
+      "direction": "westbound",
+      "callingAt": [
+        "Guilford",
+        "Branford",
+        "New Haven State Street",
+        "New Haven Union Station"
+      ],
+      "terminatesAt": "New Haven Union Station"
+    }
+  }
+}
+```
