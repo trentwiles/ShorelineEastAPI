@@ -4,6 +4,7 @@ import api
 import stationapi
 import fares
 import time
+import mistune
 
 VERSION = json.loads(open("config.json").read())["VERSION"]
 
@@ -29,7 +30,7 @@ def strToBoolHelper(string):
 
 @app.route('/')
 def home():
-    return jsonHelper({"online": True}, 200)
+    return mistune.html(open("docs.md").read())
 
 @app.route(f'/api/{VERSION}/stations/convertIDToStation/<id>')
 def idToStn(id):

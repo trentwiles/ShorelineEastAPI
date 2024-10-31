@@ -1,6 +1,15 @@
+<!-- included for md rendering, do not remove -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css">
+
 # Shore Line East API Documentation
 
-Base URL: `https://api-sle.tren`
+Base URL: `https://api-sle.trentwil.es`
+
+## Information
+Welcome to the unofficial [Shore Line East](https://shorelineeast.com) API! Source code is available on [GitHub](https://github.com/trentwiles/ShorelineEastAPI).
+
+## Ratelimits
+As of right now, the API is not ratelimted. I assume that everyone will respect the service (and indirectly CT Transit's infrastructure), but if excessive requests are made by a certain IP address, I reserve the right to throttle/block it. If this becomes a widespread issue, I will add ratelimits.
 
 ## `GET /api/v1/stations/convertIDToStation/<id>`
 
@@ -19,7 +28,7 @@ curl BASE_URL/api/v1/stations/convertIDToStation/9
 }
 ```
 
-## `GET /api/{VERSION}/stations/convertStationToID/<name>`
+## `GET /api/v1/stations/convertStationToID/<name>`
 
 | Name | Data Type | Example                                                                     |
 | ---- | --------- | --------------------------------------------------------------------------- |
