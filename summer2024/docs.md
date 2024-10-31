@@ -100,10 +100,41 @@ No parameters. Lists off all stations and their respective IDs.
 GET /api/v1/trains/getStationByID/5
 
 {
-  "generatedAt": 1729910302,
+  "generatedAt": 1730393603,
   "showingPastTrains": false,
   "eastbound": {
-    "times": [],
+    "times": [
+      {
+        "epochTime": 1730400000,
+        "humanReadable": "2:40 PM",
+        "minutesUntil": 107,
+        "inPast": false
+      },
+      {
+        "epochTime": 1730408280,
+        "humanReadable": "4:58 PM",
+        "minutesUntil": 245,
+        "inPast": false
+      },
+      {
+        "epochTime": 1730410920,
+        "humanReadable": "5:42 PM",
+        "minutesUntil": 289,
+        "inPast": false
+      },
+      {
+        "epochTime": 1730419740,
+        "humanReadable": "8:09 PM",
+        "minutesUntil": 436,
+        "inPast": false
+      },
+      {
+        "epochTime": 1730423340,
+        "humanReadable": "9:09 PM",
+        "minutesUntil": 496,
+        "inPast": false
+      }
+    ],
     "stops": {
       "currentStation": "Madison",
       "direction": "eastbound",
@@ -123,6 +154,111 @@ GET /api/v1/trains/getStationByID/5
       "direction": "westbound",
       "callingAt": [
         "Guilford",
+        "Branford",
+        "New Haven State Street",
+        "New Haven Union Station"
+      ],
+      "terminatesAt": "New Haven Union Station"
+    }
+  }
+}
+```
+
+## /api/v1/trains/getStationByName/<name>
+
+| Name | Data Type | Example                                                                     |
+| ---- | --------- | --------------------------------------------------------------------------- |
+| name | String    | Name of a station, ie. `Madison` or `New-Haven-State-Street` |
+
+```
+GET /api/v1/trains/getStationByName/Guilford
+
+{
+  "generatedAt": 1730393564,
+  "showingPastTrains": false,
+  "eastbound": {
+    "times": [
+      {
+        "epochTime": 1730399700,
+        "humanReadable": "2:35 PM",
+        "minutesUntil": 102,
+        "inPast": false
+      },
+      {
+        "epochTime": 1730407740,
+        "humanReadable": "4:49 PM",
+        "minutesUntil": 236,
+        "inPast": false
+      },
+      {
+        "epochTime": 1730410620,
+        "humanReadable": "5:37 PM",
+        "minutesUntil": 284,
+        "inPast": false
+      },
+      {
+        "epochTime": 1730419440,
+        "humanReadable": "8:04 PM",
+        "minutesUntil": 431,
+        "inPast": false
+      },
+      {
+        "epochTime": 1730423040,
+        "humanReadable": "9:04 PM",
+        "minutesUntil": 491,
+        "inPast": false
+      }
+    ],
+    "stops": {
+      "currentStation": "Guilford",
+      "direction": "eastbound",
+      "callingAt": [
+        "Madison",
+        "Clinton",
+        "Westbrook",
+        "Old Saybrook",
+        "New London"
+      ],
+      "terminatesAt": "New London"
+    }
+  },
+  "westbound": {
+    "times": [
+      {
+        "epochTime": 1730406240,
+        "humanReadable": "4:24 PM",
+        "minutesUntil": 211,
+        "inPast": false
+      },
+      {
+        "epochTime": 1730414340,
+        "humanReadable": "6:39 PM",
+        "minutesUntil": 346,
+        "inPast": false
+      },
+      {
+        "epochTime": 1730419080,
+        "humanReadable": "7:58 PM",
+        "minutesUntil": 425,
+        "inPast": false
+      },
+      {
+        "epochTime": 1730425560,
+        "humanReadable": "9:46 PM",
+        "minutesUntil": 533,
+        "inPast": false
+      },
+      {
+        "epochTime": 1730429640,
+        "humanReadable": "10:54 PM",
+        "minutesUntil": 601,
+        "inPast": false
+      }
+    ],
+    "stops": {
+      "currentStation": "Guilford",
+      "direction": "westbound",
+      "callingAt": [
         "Branford",
         "New Haven State Street",
         "New Haven Union Station"
