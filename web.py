@@ -30,7 +30,7 @@ def strToBoolHelper(string):
 
 @app.route('/')
 def home():
-    return mistune.html(open("docs.md").read())
+    return mistune.html(open("DOCS.md").read())
 
 @app.route(f'/api/{VERSION}/stations/convertIDToStation/<id>')
 def idToStn(id):

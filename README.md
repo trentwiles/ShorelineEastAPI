@@ -1,6 +1,17 @@
-# Shoreline East API
+# Shore Line East API
 
-An API for my local commuter rail system. Displays real time train data and systemwide alerts.
+Welcome to the unofficial [Shore Line East](https://shorelineeast.com) API! Source code is available on [GitHub](https://github.com/trentwiles/ShorelineEastAPI).
 
-Demo video:
-https://trentwil.es/a/glNT9Vpwl2.mp4
+## Installation
+
+```
+git clone git@github.com:trentwiles/ShorelineEastAPI.git
+cd ShorelineEastAPI/summer2024
+pip3 install -r requirements.txt
+
+# spin up the web server
+python3 web.py
+```
+
+## Documentation
+Documentation can be found under
