@@ -14,4 +14,4 @@ python3 server.py
 ```
 
 ## Documentation
-Documentation can be found under
+Documentation can be found under DOCS.md, when running the web server, it is rendered as HTML at `/`.
