@@ -10,7 +10,7 @@ cd ShorelineEastAPI/summer2024
 pip3 install -r requirements.txt
 
 # spin up the web server
-python3 web.py
+python3 server.py
 ```
 
 ## Documentation

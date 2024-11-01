@@ -3,7 +3,7 @@
 
 # Shore Line East API Documentation
 
-Base URL: `https://api-sle.trentwil.es`
+Base URL: `https://sle-api.trentwiles.com`
 
 ## Information
 Welcome to the unofficial [Shore Line East](https://shorelineeast.com) API! Source code is available on [GitHub](https://github.com/trentwiles/ShorelineEastAPI).

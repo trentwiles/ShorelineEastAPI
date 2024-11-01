@@ -1,7 +1,6 @@
 from flask import Flask, Response, request
 import json
 import api
-import stationapi
 import fares
 import time
 import mistune
@@ -101,5 +100,5 @@ def getFare():
     
     return jsonHelper(result, status=200)
 
-if __name__ == '__main__':
-    app.run(debug=False, port=10394)
+# if __name__ == '__main__':
+#     app.run(debug=False, port=10394)
