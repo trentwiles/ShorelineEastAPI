@@ -1,6 +1,8 @@
 import requests
 import api
 
+# note: New Haven - State Street and New Haven Union Station are both considered the same station
+#       under the current fare calculation scheme
 NORMAL_NAMES_TO_FARE_NAMES = {
     "New London": "newLondon",
     "Old Saybrook": "oldSaybrook",
@@ -10,7 +12,16 @@ NORMAL_NAMES_TO_FARE_NAMES = {
     "Guilford": "guilford",
     "Branford": "branford",
     "New Haven State Street": "newHaven",
-    "New Haven Union Station": "newHaven"
+    "New Haven Union Station": "newHaven",
+    # NON SLE STATIONS
+    # -----------------------
+    # Note that stations included and up to Stamford may see "thru" service
+    "West Haven": "westHaven",
+    "Bridgeport": "bridgeport",
+    "South Norwalk": "southNorwalk",
+    "Stamford": "stamford",
+    "Harlem-125th St": "harlem",
+    "Grand Central": "grandCentral"
 }
 
 ID_TO_FARE_TYPES = {

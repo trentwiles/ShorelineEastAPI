@@ -74,12 +74,12 @@ curl -X POST BASE_URL/api/v1/fares/getRideFare \
 }
 ```
 
-\* this parameter only applies to trips that involve Metro North, which this API does not support. Setting this value to true or false will not impact the fare cost.
+\* this parameter only applies to trips that involve Metro North. Metro North stations supported by the Shore Line East fare calculation scheme are `West Haven`, `Bridgeport`, `South Norwalk`, `Stamford`, `Harlem-125th St`, and `Grand Central`.
 
 
 ## /api/v1/stations/listAllStations
 
-No parameters. Lists off all stations and their respective IDs.
+No parameters. Lists off all stations and their respective IDs. Metro North stations are not listed under this endpoint, as they are only displayed on the fare calculation page.
 
 ### Example
 
